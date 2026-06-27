@@ -83,6 +83,7 @@ export const DefaultIndexers: Record<string, IndexerOptions> = {
   althub: { Display: 'altHUB', Enabled: true },
   amenzb: { Display: 'ameNZB', Enabled: true },
   animetosho: { Display: 'AnimeTosho', Enabled: true },
+  animetoshoxyz: { Display: 'AnimeTosho.xyz', Enabled: true },
   aninzb: { Display: 'aniNZB', Enabled: true },
   binsearch: { Display: 'BinSearch', Enabled: true },
   dognzb: { Display: 'DogNZB', Enabled: true },

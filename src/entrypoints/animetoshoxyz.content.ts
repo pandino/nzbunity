@@ -1,0 +1,37 @@
+import { defineContentScript } from 'wxt/sandbox';
+import { Content } from '~/Content';
+
+export default defineContentScript({
+  matches: ['*://*.animetosho.xyz/*'],
+  main(ctx) {
+    new AnimeToshoXyzContent(ctx);
+  },
+});
+
+class AnimeToshoXyzContent extends Content {
+  get id() {
+    return 'animetoshoxyz';
+  }
+
+  initializeLinks = () => {
+    for (const el of document.querySelectorAll('a[href*="storage.animetosho.xyz"][href*="/nzb/"]')) {
+      const a = el as HTMLAnchorElement;
+      const url = a.href.replace(/\.gz$/, '');
+      const link = this.createAddUrlLink({
+        url,
+        linkOptions: {
+          styles: {
+            margin: '0 0 0 3px',
+            'vertical-align': 'middle',
+          },
+        },
+      });
+
+      if (this.replaceLinks) {
+        a.replaceWith(link);
+      } else {
+        a.insertAdjacentElement('afterend', link);
+      }
+    }
+  };
+}

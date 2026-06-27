@@ -7,7 +7,7 @@ import type { NZBAddUrlResult } from '~/downloader';
 
 import '~/assets/content.css';
 
-export { request, RequestOptions } from '~/utils';
+export { request, type RequestOptions } from '~/utils';
 
 export class ContentDisabledError extends Error {
   constructor(message: string) {
