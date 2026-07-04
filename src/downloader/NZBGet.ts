@@ -194,7 +194,7 @@ export class NZBGet extends Downloader {
 
   async addUrl(url: string, options: NZBAddOptions = {}): Promise<NZBAddUrlResult> {
     const params: Array<any> = [
-      '', // NZBFilename,
+      options.name || '', // NZBFilename,
       url, // NZBContent,
       options.category || '', // Category,
       options.priority || NZBPriority.normal, // Priority,

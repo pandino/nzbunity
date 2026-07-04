@@ -88,6 +88,26 @@ export default defineBackground(() => {
                 .then(sendResponse);
               break;
 
+            case 'fetchAndAddFile':
+              if (!data.url || !data.filename)
+                return sendResponse({ success: false, error: 'No URL or filename provided' });
+
+              fetch(data.url)
+                .then(async (response) => {
+                  if (!response.ok) throw new Error(`${response.status}: ${response.statusText}`);
+                  const ds = new DecompressionStream('gzip');
+                  const decompressed = response.body!.pipeThrough(ds);
+                  return new Response(decompressed).text();
+                })
+                .then((content) =>
+                  Client.getInstance()
+                    .ready()
+                    .then((client) => client.addFile(data.filename, content, data.options ?? {})),
+                )
+                .then(sendResponse)
+                .catch((err) => sendResponse({ success: false, error: String(err) }));
+              break;
+
             default:
               throw Error(`Unknown message: ${key}`, data);
           }

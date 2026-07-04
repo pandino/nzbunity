@@ -13,19 +13,35 @@ class AnimeToshoXyzContent extends Content {
     return 'animetoshoxyz';
   }
 
+  getNzbName(href: string): string {
+    const parsed = new URL(href);
+    const raw = parsed.searchParams.get('filename') ?? parsed.pathname.split('/').pop() ?? '';
+    return decodeURIComponent(raw).replace(/\.nzb(\.gz)?$/, '');
+  }
+
   initializeLinks = () => {
     for (const el of document.querySelectorAll('a[href*="storage.animetosho.xyz"][href*="/nzb/"]')) {
       const a = el as HTMLAnchorElement;
-      const url = a.href.replace(/\.gz$/, '');
-      const link = this.createAddUrlLink({
-        url,
-        linkOptions: {
-          styles: {
-            margin: '0 0 0 3px',
-            'vertical-align': 'middle',
-          },
+      const name = this.getNzbName(a.href);
+
+      const link = this.createLink({
+        styles: {
+          margin: '0 0 0 3px',
+          'vertical-align': 'middle',
         },
       });
+      link.setAttribute('href', a.href);
+
+      link.addEventListener('click', async (event) => {
+        event.preventDefault();
+        link.dispatchEvent(new Event('nzb.pending'));
+        const res = await browser.runtime.sendMessage({
+          fetchAndAddFile: { url: a.href, filename: name },
+        });
+        this.ctx.setTimeout(() => {
+          link.dispatchEvent(new Event(res?.success ? 'nzb.success' : 'nzb.failure'));
+        }, 500);
+      }, false);
 
       if (this.replaceLinks) {
         a.replaceWith(link);
