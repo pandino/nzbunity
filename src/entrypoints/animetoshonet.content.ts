@@ -2,15 +2,15 @@ import { defineContentScript } from 'wxt/sandbox';
 import { Content } from '~/Content';
 
 export default defineContentScript({
-  matches: ['*://*.animetosho.xyz/*'],
+  matches: ['*://*.animetosho.net/*'],
   main(ctx) {
-    new AnimeToshoXyzContent(ctx);
+    new AnimeToshoNetContent(ctx);
   },
 });
 
-class AnimeToshoXyzContent extends Content {
+class AnimeToshoNetContent extends Content {
   get id() {
-    return 'animetoshoxyz';
+    return 'animetoshonet';
   }
 
   getNzbName(href: string): string {
@@ -20,7 +20,7 @@ class AnimeToshoXyzContent extends Content {
   }
 
   initializeLinks = () => {
-    for (const el of document.querySelectorAll('a[href*="storage.animetosho.xyz"][href*="/nzb/"]')) {
+    for (const el of document.querySelectorAll('a[href*="storage.animetosho.net"][href*="/nzb/"]')) {
       const a = el as HTMLAnchorElement;
       const name = this.getNzbName(a.href);
 
